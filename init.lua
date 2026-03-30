@@ -1,34 +1,5 @@
--- init.lua
-
--- Bootloader for ManuOS on OpenComputers
-
-local coreModules = {
-    "moduleA",
-    "moduleB",
-    "moduleC"
-}
-
---- Function to load modules
-local function loadModules()
-    for _, module in ipairs(coreModules) do
-        local success, err = pcall(require, module)
-        if not success then
-            print("Error loading module: " .. module .. " - " .. err)
-            os.exit(1)
-        end
-    end
-end
-
---- Function to start the main event loop
-local function mainEventLoop()
-    while true do
-        -- Main event processing logic goes here
-        os.sleep(1)  -- Dummy sleep to prevent busy waiting
-    end
-end
-
--- Initialize core modules
-loadModules()
-
--- Start the main event loop
-mainEventLoop()
+local fs = require("filesystem")
+local dirs = {"/home", "/usr", "/usr/bin", "/lib", "/boot", "/bin", "/etc", "/tmp", "/var", "/var/log"}
+for _, d in ipairs(dirs) do if not fs.exists(d) then fs.makeDirectory(d) end end
+if not fs.exists("/etc/manuos.cfg") then local f = fs.open("/etc/manuos.cfg", "w") f:write("hostname=ManuOS\n") f:close() end
+dofile("/bin/shell.lua")
